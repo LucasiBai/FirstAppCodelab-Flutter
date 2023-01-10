@@ -27,6 +27,11 @@ class MyApp extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
   WordPair current = WordPair.random();
+
+  getNext(){
+    current = WordPair.random();
+    notifyListeners();
+  }
 }
 
 class HomePage extends StatelessWidget {
@@ -42,11 +47,9 @@ class HomePage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text("Random Words"),
-          Text(appState.current.asLowerCase),
+          Text(appState.current.asPascalCase),
           ElevatedButton(
-              onPressed: () {
-                print("Hi");
-              },
+              onPressed: appState.getNext,
               child: Text("Next"))
         ],
       ),
