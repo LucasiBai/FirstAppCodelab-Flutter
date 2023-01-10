@@ -31,8 +31,23 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   WordPair current = WordPair.random();
 
-  getNext() {
+  final Set<WordPair> likedList = <WordPair>{};
+
+  void getNext() {
     current = WordPair.random();
+    notifyListeners();
+  }
+
+  bool isLiked() {
+    return likedList.contains(current);
+  }
+
+  void handleLike() {
+    if (isLiked()) {
+      likedList.remove(current);
+    } else {
+      likedList.add(current);
+    }
     notifyListeners();
   }
 }
@@ -46,6 +61,8 @@ class HomePage extends StatelessWidget {
 
     final wordPair = appState.current;
 
+    bool isLiked = appState.isLiked();
+
     return Scaffold(
         body: Center(
       child: Column(
@@ -55,26 +72,25 @@ class HomePage extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(onPressed: appState.getNext, child: Text("Next")),
-              SizedBox(width: 15,),
-              ElevatedButton(
-                  onPressed: appState.getNext,
-                  child: Row(
-                    children: [
-                      Text("Fav"),
-                      Icon(
-                        Icons.favorite_border,
-                        size: 18,
-                      )
-                    ],
-                  )),
-            ],
-          )
+          _interactiveButtons(appState, isLiked)
         ],
       ),
     ));
+  }
+
+  Row _interactiveButtons(MyAppState appState, bool isLiked) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ElevatedButton.icon(
+            onPressed: appState.handleLike,
+            icon: Icon(isLiked ? Icons.favorite : Icons.favorite_border),
+            label: Text("Like")),
+        SizedBox(
+          width: 15,
+        ),
+        ElevatedButton(onPressed: appState.getNext, child: Text("Next")),
+      ],
+    );
   }
 }
