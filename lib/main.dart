@@ -1,6 +1,9 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+
+import 'package:english_words/english_words.dart';
 import 'package:provider/provider.dart';
+
+import '_widgets/PairCard.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,7 +20,7 @@ class MyApp extends StatelessWidget {
         title: "Namer App",
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(seedColor: Color(0x93A8C2E1)),
         ),
         home: HomePage(),
       ),
@@ -28,7 +31,7 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   WordPair current = WordPair.random();
 
-  getNext(){
+  getNext() {
     current = WordPair.random();
     notifyListeners();
   }
@@ -41,16 +44,35 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     MyAppState appState = context.watch<MyAppState>();
 
+    final wordPair = appState.current;
+
     return Scaffold(
         body: Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("Random Words"),
-          Text(appState.current.asPascalCase),
-          ElevatedButton(
-              onPressed: appState.getNext,
-              child: Text("Next"))
+          PairCard(wordPair: wordPair),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(onPressed: appState.getNext, child: Text("Next")),
+              SizedBox(width: 15,),
+              ElevatedButton(
+                  onPressed: appState.getNext,
+                  child: Row(
+                    children: [
+                      Text("Fav"),
+                      Icon(
+                        Icons.favorite_border,
+                        size: 18,
+                      )
+                    ],
+                  )),
+            ],
+          )
         ],
       ),
     ));
