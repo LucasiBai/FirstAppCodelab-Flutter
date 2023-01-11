@@ -17,17 +17,19 @@ class PairCard extends StatelessWidget {
     final TextStyle textStyle = theme.textTheme.displayMedium!
         .copyWith(color: theme.colorScheme.onSecondary);
 
-    return Card(
-      color: theme.colorScheme.secondary,
-      elevation: 30,
-      shadowColor: Colors.black26,
-      child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Text(
-            wordPair.asLowerCase,
-            style: textStyle,
-            semanticsLabel: wordPair.asPascalCase,
-          )),
+    return FittedBox(
+      child: Card(
+        color: theme.colorScheme.secondary,
+        elevation: 30,
+        shadowColor: Colors.black26,
+        child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              wordPair.asLowerCase,
+              style: textStyle,
+              semanticsLabel: wordPair.asPascalCase,
+            )),
+      ),
     );
   }
 }

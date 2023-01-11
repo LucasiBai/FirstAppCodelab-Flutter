@@ -60,20 +60,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentPageIdx = 0;
+  int _currentPageIdx = 1;
 
   @override
   Widget build(BuildContext context) {
-    List pages = [GeneratorPage(), Placeholder()];
+    List pages = [
+      GeneratorPage(),
+      FavouritesPage(),
+    ];
 
-    Widget currentPage = pages[_currentPageIdx];
+    Widget currentPage;
+
+    try {
+      currentPage = pages[_currentPageIdx];
+    } catch (error) {
+      throw UnimplementedError(
+          "No Widget in $_currentPageIdx index in 'pages'");
+    }
 
     return Scaffold(
         body: Row(
       children: [
         SafeArea(
             child: NavigationRail(
-          extended: false,
+          minWidth: 70,
+          extended: MediaQuery.of(context).size.width > 600,
           destinations: [
             NavigationRailDestination(
                 icon: Icon(Icons.home), label: Text("Home")),
@@ -136,5 +147,40 @@ class GeneratorPage extends StatelessWidget {
         ElevatedButton(onPressed: appState.getNext, child: Text("Next")),
       ],
     );
+  }
+}
+
+class FavouritesPage extends StatelessWidget {
+  const FavouritesPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    MyAppState appState = context.watch<MyAppState>();
+
+    Set<WordPair> likedList = appState.likedList;
+    int totalLikes = likedList.length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+            padding: EdgeInsets.all(20),
+            child: Text("You have $totalLikes favourites:")),
+        ..._getLikedWords(likedList)
+      ],
+    );
+  }
+
+  List<ListTile> _getLikedWords(Set<WordPair> list) {
+    List<ListTile> likedListWidgets = [];
+
+    for (var item in list) {
+      likedListWidgets.add(ListTile(
+        leading: Icon(Icons.favorite),
+        title: Text(item.asLowerCase),
+      ));
+    }
+
+    return likedListWidgets;
   }
 }
