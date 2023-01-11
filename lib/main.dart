@@ -60,7 +60,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentPageIdx = 1;
+  int _currentPageIdx = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -160,8 +160,16 @@ class FavouritesPage extends StatelessWidget {
     Set<WordPair> likedList = appState.likedList;
     int totalLikes = likedList.length;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    if (likedList.isEmpty) {
+      return Container(
+        width: double.infinity,
+        height: double.infinity,
+        padding: EdgeInsets.all(20),
+        child: Text("No liked words yet"),
+      );
+    }
+
+    return ListView(
       children: [
         Container(
             padding: EdgeInsets.all(20),
