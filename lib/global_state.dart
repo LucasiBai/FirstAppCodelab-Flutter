@@ -23,4 +23,9 @@ class MyAppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void removeLikeOf(WordPair pair){
+    likedList.remove(pair);
+    notifyListeners();
+  }
 }

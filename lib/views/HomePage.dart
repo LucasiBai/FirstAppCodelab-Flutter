@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'FavouritesPage.dart';
@@ -30,34 +29,71 @@ class _HomePageState extends State<HomePage> {
           "No Widget in $_currentPageIdx index in 'pages'");
     }
 
-    return Scaffold(
-        body: Row(
-          children: [
-            SafeArea(
-                child: NavigationRail(
-                  minWidth: 70,
-                  extended: MediaQuery.of(context).size.width > 600,
-                  destinations: [
-                    NavigationRailDestination(
-                        icon: Icon(Icons.home), label: Text("Home")),
-                    NavigationRailDestination(
-                        icon: Icon(Icons.favorite), label: Text("Favourites")),
-                  ],
-                  selectedIndex: _currentPageIdx,
-                  onDestinationSelected: (selectedId) {
-                    setState(() {
-                      _currentPageIdx = selectedId;
-                    });
-                  },
-                )),
-            Expanded(
-                child: Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: currentPage,
-                ))
+    return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth > 450) {
+        return _getHorizontalHome(context, currentPage);
+      }
+      return _getVerticalHome(context, currentPage);
+    }));
+  }
+
+  Widget _getVerticalHome(BuildContext context, currentPage) {
+    return Column(
+      children: [
+        Expanded(
+            child: Container(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          child: currentPage,
+        )),
+        SafeArea(
+            child: NavigationBar(
+          destinations: [
+            NavigationDestination(
+              icon: Icon(Icons.home),
+              label: "Home",
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.favorite),
+              label: "Favourites",
+            ),
           ],
-        ));
+          selectedIndex: _currentPageIdx,
+          onDestinationSelected: (selectedId) {
+            setState(() {
+              _currentPageIdx = selectedId;
+            });
+          },
+        )),
+      ],
+    );
+  }
+
+  Widget _getHorizontalHome(BuildContext context, currentPage) {
+    return Row(
+      children: [
+        SafeArea(
+            child: NavigationRail(
+          minWidth: 70,
+          extended: MediaQuery.of(context).size.width > 600,
+          destinations: [
+            NavigationRailDestination(
+                icon: Icon(Icons.home), label: Text("Home")),
+            NavigationRailDestination(
+                icon: Icon(Icons.favorite), label: Text("Favourites")),
+          ],
+          selectedIndex: _currentPageIdx,
+          onDestinationSelected: (selectedId) {
+            setState(() {
+              _currentPageIdx = selectedId;
+            });
+          },
+        )),
+        Expanded(
+            child: Container(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          child: currentPage,
+        )),
+      ],
+    );
   }
 }
-
-

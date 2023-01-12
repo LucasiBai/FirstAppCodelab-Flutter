@@ -11,6 +11,12 @@ class FavouritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     MyAppState appState = context.watch<MyAppState>();
 
+    final buttonColor = Theme.of(context).colorScheme.primary;
+
+    removeItem(item) {
+      appState.removeLikeOf(item);
+    }
+
     Set<WordPair> likedList = appState.likedList;
     int totalLikes = likedList.length;
 
@@ -23,24 +29,45 @@ class FavouritesPage extends StatelessWidget {
       );
     }
 
-    return ListView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
             padding: EdgeInsets.all(20),
             child: Text("You have $totalLikes favourites:")),
-        ..._getLikedWords(likedList)
+        Expanded(
+          child: GridView(
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 350,
+              childAspectRatio: 4 / 1,
+            ),
+            children: _getLikedWords(likedList, buttonColor, removeItem),
+          ),
+        )
       ],
     );
   }
 
-  List<ListTile> _getLikedWords(Set<WordPair> list) {
+  List<ListTile> _getLikedWords(
+      Set<WordPair> list, Color color, Function(WordPair item) onTap) {
     List<ListTile> likedListWidgets = [];
 
     for (var item in list) {
       likedListWidgets.add(ListTile(
-        leading: Icon(Icons.favorite),
-        title: Text(item.asLowerCase),
-      ));
+        key: UniqueKey(),
+          leading: IconButton(
+              icon: Icon(
+                Icons.delete,
+                semanticLabel: "Delete",
+              ),
+              onPressed: () {
+                onTap(item);
+              },
+              color: color),
+          title: Text(
+            item.asLowerCase,
+            semanticsLabel: item.asPascalCase,
+          )));
     }
 
     return likedListWidgets;
