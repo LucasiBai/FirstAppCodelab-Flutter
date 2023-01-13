@@ -4,23 +4,31 @@ import 'package:flutter/material.dart';
 class MyAppState extends ChangeNotifier {
   WordPair current = WordPair.random();
 
+  final List<WordPair> historyList = <WordPair>[];
   final Set<WordPair> likedList = <WordPair>{};
 
   void getNext() {
+    historyList.add(current);
+
     current = WordPair.random();
     notifyListeners();
   }
 
-  bool isLiked() {
-    return likedList.contains(current);
+  bool isLiked(WordPair wordPair) {
+      return likedList.contains(wordPair);
   }
 
-  void handleLike() {
-    if (isLiked()) {
-      likedList.remove(current);
+  void handleLike(WordPair wordPair) {
+
+    if (isLiked(wordPair)) {
+      removeLikeOf(wordPair);
     } else {
-      likedList.add(current);
+      addLikeOf(wordPair);
     }
+  }
+
+  void addLikeOf(WordPair pair){
+    likedList.add(current);
     notifyListeners();
   }
 

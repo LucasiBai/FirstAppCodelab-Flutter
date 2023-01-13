@@ -1,10 +1,9 @@
-
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../_widgets/PairCard.dart';
 import '../global_state.dart';
-
 
 class GeneratorPage extends StatelessWidget {
   const GeneratorPage({Key? key}) : super(key: key);
@@ -15,17 +14,25 @@ class GeneratorPage extends StatelessWidget {
 
     final wordPair = appState.current;
 
-    bool isLiked = appState.isLiked();
+    bool isLiked = appState.isLiked(wordPair);
 
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          PairCard(wordPair: wordPair),
-          SizedBox(
-            height: 20,
-          ),
-          _interactiveButtons(appState, isLiked)
+          Expanded(
+              flex: 3,
+              child: HistoryList()),
+          Expanded(
+              flex: 5,
+              child:
+          Column(children: [
+            PairCard(wordPair: wordPair),
+            SizedBox(
+              height: 20,
+            ),
+            _interactiveButtons(appState, isLiked)
+          ],))
         ],
       ),
     );
@@ -36,7 +43,9 @@ class GeneratorPage extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ElevatedButton.icon(
-            onPressed: appState.handleLike,
+            onPressed: () {
+              appState.handleLike(appState.current);
+            },
             icon: Icon(isLiked ? Icons.favorite : Icons.favorite_border),
             label: Text("Like")),
         SizedBox(
@@ -45,5 +54,55 @@ class GeneratorPage extends StatelessWidget {
         ElevatedButton(onPressed: appState.getNext, child: Text("Next")),
       ],
     );
+  }
+}
+
+class HistoryList extends StatelessWidget {
+  const HistoryList({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    MyAppState appState = context.watch<MyAppState>();
+
+    final Function(WordPair wordPair) handleLike = appState.handleLike;
+
+    return OverflowBox(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          for (final word in appState.historyList)
+            WordButton(
+                key: UniqueKey(),
+                wordPair: word,
+                onTap: handleLike,
+                inFav: appState.isLiked(word))
+        ],
+      ),
+    );
+  }
+}
+
+class WordButton extends StatelessWidget {
+  WordButton(
+      {Key? key,
+      required this.wordPair,
+      required this.onTap,
+      required this.inFav})
+      : super(key: key);
+
+  WordPair wordPair;
+  Function(WordPair wordPair) onTap;
+  bool inFav;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+        onPressed: () {
+          onTap(wordPair);
+        },
+        icon: inFav ? Icon(Icons.favorite) : SizedBox(),
+        label: Text(wordPair.asLowerCase));
   }
 }
