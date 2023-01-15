@@ -29,11 +29,19 @@ class _HomePageState extends State<HomePage> {
           "No Widget in $_currentPageIdx index in 'pages'");
     }
 
+    Widget mainArea = ColoredBox(
+      color: Theme.of(context).colorScheme.surfaceVariant,
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 200),
+        child: currentPage,
+      ),
+    );
+
     return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 450) {
-        return _getHorizontalHome(context, currentPage);
+        return _getHorizontalHome(context, mainArea);
       }
-      return _getVerticalHome(context, currentPage);
+      return _getVerticalHome(context, mainArea);
     }));
   }
 

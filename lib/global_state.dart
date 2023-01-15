@@ -28,7 +28,7 @@ class MyAppState extends ChangeNotifier {
   }
 
   void addLikeOf(WordPair pair){
-    likedList.add(current);
+    likedList.add(pair);
     notifyListeners();
   }
 

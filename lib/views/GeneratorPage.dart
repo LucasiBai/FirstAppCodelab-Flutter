@@ -15,6 +15,7 @@ class GeneratorPage extends StatelessWidget {
     final wordPair = appState.current;
 
     bool isLiked = appState.isLiked(wordPair);
+    print(isLiked);
 
     return Center(
       child: Column(
@@ -76,7 +77,9 @@ class HistoryList extends StatelessWidget {
             WordButton(
                 key: UniqueKey(),
                 wordPair: word,
-                onTap: handleLike,
+                onTap: (){
+                  handleLike(word);
+                },
                 inFav: appState.isLiked(word))
         ],
       ),
@@ -93,16 +96,14 @@ class WordButton extends StatelessWidget {
       : super(key: key);
 
   WordPair wordPair;
-  Function(WordPair wordPair) onTap;
+  Function() onTap;
   bool inFav;
 
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
-        onPressed: () {
-          onTap(wordPair);
-        },
-        icon: inFav ? Icon(Icons.favorite) : SizedBox(),
+        onPressed: onTap,
+        icon: inFav ? Icon(Icons.favorite, size: 15,) : SizedBox(),
         label: Text(wordPair.asLowerCase));
   }
 }

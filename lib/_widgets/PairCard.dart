@@ -14,11 +14,14 @@ class PairCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final TextStyle firstTextStyle = theme.textTheme.displayMedium!
-        .copyWith(color: theme.colorScheme.onSecondary, fontWeight: FontWeight.w300);
+    final TextStyle textStyle = theme.textTheme.displayMedium!
+        .copyWith(color: theme.colorScheme.onSecondary);
 
-    final TextStyle secondTextStyle = theme.textTheme.displayMedium!
-        .copyWith(color: theme.colorScheme.onSecondary, fontWeight: FontWeight.w600);
+    final TextStyle firstTextStyle =
+        textStyle.copyWith(fontWeight: FontWeight.w300);
+
+    final TextStyle secondTextStyle =
+        textStyle.copyWith(fontWeight: FontWeight.w600);
 
     return FittedBox(
       child: Card(
@@ -27,17 +30,22 @@ class PairCard extends StatelessWidget {
         shadowColor: Colors.black26,
         child: Container(
             padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Text(
-                  wordPair.first,
-                  style: firstTextStyle,
+            child: AnimatedSize(
+              duration: Duration(milliseconds: 200),
+              child: MergeSemantics(
+                child: Wrap(
+                  children: [
+                    Text(
+                      wordPair.first,
+                      style: firstTextStyle,
+                    ),
+                    Text(
+                      wordPair.second,
+                      style: secondTextStyle,
+                    ),
+                  ],
                 ),
-                Text(
-                  wordPair.second,
-                  style: secondTextStyle,
-                ),
-              ],
+              ),
             )),
       ),
     );
