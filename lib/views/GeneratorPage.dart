@@ -58,32 +58,58 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
-class HistoryList extends StatelessWidget {
+class HistoryList extends StatefulWidget {
   const HistoryList({
     Key? key,
   }) : super(key: key);
 
+
+  @override
+  State<HistoryList> createState() => _HistoryListState();
+}
+
+class _HistoryListState extends State<HistoryList> {
+  final _key = GlobalKey();
+
+  static const Gradient _maskingGradient = LinearGradient(
+    colors: [Colors.transparent, Colors.black],
+
+    stops: [0.0, 0.5],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   @override
   Widget build(BuildContext context) {
     MyAppState appState = context.watch<MyAppState>();
+    appState.historyListKey = _key;
+
+    final historyList = appState.historyList;
 
     final Function(WordPair wordPair) handleLike = appState.handleLike;
 
-    return OverflowBox(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          for (final word in appState.historyList)
-            WordButton(
-                key: UniqueKey(),
-                wordPair: word,
-                onTap: (){
-                  handleLike(word);
-                },
-                inFav: appState.isLiked(word))
-        ],
-      ),
-    );
+    return ShaderMask(shaderCallback: (bounds)=> _maskingGradient.createShader(bounds),
+    blendMode: BlendMode.dstIn,
+    child: AnimatedList(
+        initialItemCount: historyList.length,
+        padding: EdgeInsets.only(top:  100),
+        reverse: true,
+        itemBuilder: (context, index, animation){
+
+          final wordPair = historyList[index];
+
+          return SizeTransition(sizeFactor: animation,
+            child: Center(
+              child: WordButton(
+                  key: UniqueKey(),
+                  wordPair: wordPair,
+                  onTap: (){
+                    handleLike(wordPair);
+                  },
+                  inFav: appState.isLiked(wordPair)),
+            ),);
+        }),);
+
   }
 }
 

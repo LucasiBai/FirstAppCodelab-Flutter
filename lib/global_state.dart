@@ -4,11 +4,16 @@ import 'package:flutter/material.dart';
 class MyAppState extends ChangeNotifier {
   WordPair current = WordPair.random();
 
+  GlobalKey? historyListKey;
+
   final List<WordPair> historyList = <WordPair>[];
   final Set<WordPair> likedList = <WordPair>{};
 
   void getNext() {
-    historyList.add(current);
+    historyList.insert(0, current);
+
+    var animatedList = historyListKey?.currentState as AnimatedListState?;
+    animatedList?.insertItem(0);
 
     current = WordPair.random();
     notifyListeners();
